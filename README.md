@@ -189,6 +189,10 @@ It demonstrates how a small product idea can be extended into a realistic archit
 
 # Quick Start
 
+# Dashboard Preview
+
+![Affirmation Intelligence Platform Dashboard](Screenshot%202026-09-30%20190618.png)
+
 ## 1. Create a Virtual Environment
 
     python -m venv .venv
