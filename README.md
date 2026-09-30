@@ -1,4 +1,3 @@
-@'
 # ✨ Affirmation Intelligence Platform
 
 An event-driven AI and data engineering platform that generates personalised affirmations and turns each generation request into streaming analytics data.
