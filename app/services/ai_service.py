@@ -32,8 +32,8 @@ class AffirmationAIService:
                     category=category,
                     tone=tone,
                 )
-            except Exception:
-                pass
+            except Exception as error:
+                print("OPENAI ERROR:", error)
 
         return GenerationResult(
             text=self._fallback(name=name, goal=goal, category=category, tone=tone),
