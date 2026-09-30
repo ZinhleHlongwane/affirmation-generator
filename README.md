@@ -1,29 +1,16 @@
+@'
 # ✨ Affirmation Intelligence Platform
 
-An advanced portfolio project that combines **AI engineering, backend development, event streaming, data engineering, big-data processing, AWS cloud services and DevOps** around a simple product idea: personalised affirmations.
+An event-driven AI and data engineering platform that generates personalised affirmations and turns each generation request into streaming analytics data.
 
-## What this project demonstrates
+The project started as a simple Python affirmation generator and was redesigned into a multi-service platform using **FastAPI, Apache Kafka, Apache Spark, Docker, AWS and Terraform**.
 
-- Python
-- FastAPI REST APIs
-- AI-generated personalised affirmations
-- Apache Kafka event streaming
-- Apache Spark Structured Streaming
-- ETL and medallion architecture
-- Bronze / Silver / Gold data layers
-- Amazon S3 data lake
-- Amazon DynamoDB
-- Docker and Docker Compose
-- AWS ECS/Fargate infrastructure
-- Terraform
-- GitHub Actions CI
-- Automated tests
+It demonstrates how a small product idea can be extended into a realistic architecture covering API development, AI integration, event streaming, ETL, data lake design, analytics and cloud infrastructure.
 
 ---
 
 # Architecture
 
-```text
                          ┌────────────────────┐
                          │       User         │
                          └─────────┬──────────┘
@@ -38,7 +25,7 @@ An advanced portfolio project that combines **AI engineering, backend developmen
                  │                                   │
                  ▼                                   ▼
         ┌─────────────────┐                ┌──────────────────┐
-        │ SQLite/Postgres │                │ Apache Kafka     │
+        │     SQLite      │                │ Apache Kafka     │
         │ operational DB  │                │ event stream     │
         └─────────────────┘                └─────────┬────────┘
                                                     │
@@ -61,11 +48,10 @@ An advanced portfolio project that combines **AI engineering, backend developmen
                │ Amazon S3   │                                           │ DynamoDB       │
                │ data lake   │                                           │ live metrics   │
                └─────────────┘                                           └────────────────┘
-```
 
 ---
 
-# Main flow
+# Main Flow
 
 1. A user sends a request to the FastAPI service.
 2. The AI service generates a personalised affirmation.
@@ -80,324 +66,414 @@ An advanced portfolio project that combines **AI engineering, backend developmen
 
 ---
 
-# Event example
+# Tech Stack
 
-```json
-{
-  "event_id": "2de53416-d663-41b4-9027-4ad78eb15865",
-  "event_type": "affirmation.generated",
-  "affirmation_id": 21,
-  "name": "Zinhle",
-  "mood": "nervous",
-  "goal": "become a confident software developer",
-  "category": "career",
-  "tone": "encouraging",
-  "source": "openai",
-  "affirmation": "I can keep learning and moving toward the developer I want to become.",
-  "created_at": "2026-09-29T10:00:00+00:00"
-}
-```
+## Backend & AI
 
----
+- Python
+- FastAPI
+- OpenAI integration
+- SQLAlchemy
+- REST APIs
 
-# Project structure
+## Data Engineering
 
-```text
-affirmation-intelligence-platform/
-│
-├── app/
-│   ├── api/
-│   │   └── routes.py
-│   ├── core/
-│   │   └── config.py
-│   ├── db/
-│   │   ├── database.py
-│   │   └── models.py
-│   ├── events/
-│   │   ├── models.py
-│   │   ├── publisher.py
-│   │   └── kafka_publisher.py
-│   ├── services/
-│   │   ├── affirmation_service.py
-│   │   └── ai_service.py
-│   ├── main.py
-│   └── schemas.py
-│
-├── streaming/
-│   ├── spark_streaming.py
-│   └── kafka_consumer.py
-│
-├── pipeline/
-│   ├── batch_etl.py
-│   └── quality.py
-│
-├── aws/
-│   ├── s3_data_lake.py
-│   └── dynamodb_repository.py
-│
-├── terraform/
-│   ├── main.tf
-│   ├── variables.tf
-│   └── outputs.tf
-│
-├── tests/
-│   ├── test_ai_service.py
-│   ├── test_api.py
-│   ├── test_events.py
-│   └── test_pipeline.py
-│
-├── data/
-│   └── seed_affirmations.csv
-│
-├── .github/workflows/ci.yml
-├── .env.example
-├── docker-compose.yml
-├── Dockerfile
-├── dashboard.py
-├── Makefile
-├── pyproject.toml
-├── requirements.txt
-└── README.md
-```
+- Apache Kafka
+- Apache Spark Structured Streaming
+- Batch ETL
+- Bronze / Silver / Gold architecture
+- Data quality validation
+- Event-driven architecture
+
+## Cloud & Infrastructure
+
+- Amazon S3
+- Amazon DynamoDB
+- AWS ECS/Fargate
+- Amazon ECR
+- CloudWatch
+- Terraform
+
+## DevOps & Analytics
+
+- Docker
+- Docker Compose
+- GitHub Actions
+- Streamlit
+- Pytest
 
 ---
 
-# Quick start
+# Event Example
 
-## 1. Create a virtual environment
+    {
+      "event_id": "2de53416-d663-41b4-9027-4ad78eb15865",
+      "event_type": "affirmation.generated",
+      "affirmation_id": 21,
+      "name": "Zinhle",
+      "mood": "nervous",
+      "goal": "become a confident software developer",
+      "category": "career",
+      "tone": "encouraging",
+      "source": "openai",
+      "affirmation": "I can keep learning and moving toward the developer I want to become.",
+      "created_at": "2026-09-29T10:00:00+00:00"
+    }
 
-```bash
-python -m venv .venv
-```
+---
+
+# Project Structure
+
+    affirmation-intelligence-platform/
+    │
+    ├── app/
+    │   ├── api/
+    │   │   └── routes.py
+    │   ├── core/
+    │   │   └── config.py
+    │   ├── db/
+    │   │   ├── database.py
+    │   │   └── models.py
+    │   ├── events/
+    │   │   ├── factory.py
+    │   │   ├── kafka_publisher.py
+    │   │   ├── models.py
+    │   │   └── publisher.py
+    │   ├── services/
+    │   │   ├── affirmation_service.py
+    │   │   └── ai_service.py
+    │   ├── main.py
+    │   └── schemas.py
+    │
+    ├── streaming/
+    │   ├── spark_streaming.py
+    │   └── kafka_consumer.py
+    │
+    ├── pipeline/
+    │   ├── batch_etl.py
+    │   └── quality.py
+    │
+    ├── aws/
+    │   ├── s3_data_lake.py
+    │   └── dynamodb_repository.py
+    │
+    ├── terraform/
+    │   ├── main.tf
+    │   ├── variables.tf
+    │   └── outputs.tf
+    │
+    ├── tests/
+    │   ├── test_ai_service.py
+    │   ├── test_api.py
+    │   ├── test_events.py
+    │   └── test_pipeline.py
+    │
+    ├── data/
+    │   └── seed_affirmations.csv
+    │
+    ├── .github/
+    │   └── workflows/
+    │       └── ci.yml
+    │
+    ├── .env.example
+    ├── .gitignore
+    ├── docker-compose.yml
+    ├── Dockerfile
+    ├── dashboard.py
+    ├── Makefile
+    ├── PORTFOLIO_NOTES.md
+    ├── pyproject.toml
+    ├── requirements.txt
+    └── README.md
+
+---
+
+# Quick Start
+
+## 1. Create a Virtual Environment
+
+    python -m venv .venv
 
 Windows PowerShell:
 
-```powershell
-.venv\Scripts\Activate.ps1
-```
+    .venv\Scripts\Activate.ps1
 
 macOS/Linux:
 
-```bash
-source .venv/bin/activate
-```
+    source .venv/bin/activate
 
-## 2. Install dependencies
+## 2. Install Dependencies
 
-```bash
-pip install -r requirements.txt
-```
+    pip install -r requirements.txt
 
-## 3. Configure environment variables
+## 3. Configure Environment Variables
 
 Windows:
 
-```powershell
-Copy-Item .env.example .env
-```
+    Copy-Item .env.example .env
 
 macOS/Linux:
 
-```bash
-cp .env.example .env
-```
+    cp .env.example .env
 
-The application works without an OpenAI API key. In that case it uses a deterministic fallback generator.
+The application can run without an OpenAI API key. In that case it uses a deterministic fallback affirmation generator.
 
 ## 4. Start Kafka
 
-```bash
-docker compose up -d kafka
-```
+    docker compose up -d kafka
 
 ## 5. Start the API
 
-```bash
-uvicorn app.main:app --reload
-```
+    uvicorn app.main:app --reload
 
 Open:
 
-```text
-http://127.0.0.1:8000/docs
-```
+    http://127.0.0.1:8000/docs
 
-## 6. Generate an affirmation
+## 6. Generate an Affirmation
 
-POST:
+Endpoint:
 
-```text
-/api/v1/affirmations/generate
-```
+    POST /api/v1/affirmations/generate
 
-Example body:
+Example request:
 
-```json
-{
-  "name": "Zinhle",
-  "mood": "nervous",
-  "goal": "grow as a data engineer",
-  "category": "career",
-  "tone": "encouraging"
-}
-```
+    {
+      "name": "Zinhle",
+      "mood": "nervous",
+      "goal": "grow as a data engineer",
+      "category": "career",
+      "tone": "encouraging"
+    }
 
-## 7. Inspect Kafka events
+## 7. Inspect Kafka Events
 
-```bash
-python -m streaming.kafka_consumer
-```
+    python -m streaming.kafka_consumer
 
 ## 8. Run Spark Structured Streaming
 
-Spark needs the Kafka connector package:
+Spark requires the Kafka connector package.
 
-```bash
-spark-submit \
-  --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.3 \
-  streaming/spark_streaming.py
-```
+    spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.3 streaming/spark_streaming.py
 
-The Spark job produces:
+The streaming job writes data to:
 
-```text
-data/lake/bronze/
-data/lake/silver/
-data/lake/gold/
-```
+    data/lake/bronze_stream/
+    data/lake/silver_stream/
+    data/lake/gold_stream/
 
-## 9. Run batch ETL
+Checkpoint data is stored under:
 
-```bash
-python -m pipeline.batch_etl
-```
+    data/lake/checkpoints/
 
-## 10. Run dashboard
+## 9. Run Batch ETL
 
-```bash
-streamlit run dashboard.py
-```
+    python -m pipeline.batch_etl
+
+## 10. Run the Dashboard
+
+    streamlit run dashboard.py
 
 ---
 
-# AWS
+# Data Pipeline
 
-## S3
+## Bronze
 
-The `aws/s3_data_lake.py` module can upload Bronze, Silver and Gold outputs to:
+The Bronze layer stores raw streaming events with minimal transformation.
 
-```text
-s3://<bucket>/bronze/
-s3://<bucket>/silver/
-s3://<bucket>/gold/
-```
+Typical contents include:
 
-## DynamoDB
+- Kafka key
+- raw JSON payload
+- Kafka timestamp
 
-The `aws/dynamodb_repository.py` module stores Gold-layer category metrics using a simple single-table pattern.
+## Silver
 
-Example keys:
+The Silver layer contains validated and cleaned events.
 
-```text
-PK: CATEGORY#career
-SK: LATEST
-```
+Processing includes:
 
-## ECS/Fargate
+- filtering for `affirmation.generated` events
+- validating affirmation text
+- parsing timestamps
+- standardising categories
+- standardising event sources
+- removing invalid records
 
-Terraform creates:
+## Gold
 
-- ECR repository
-- ECS cluster
-- Fargate task definition
-- Fargate service
-- CloudWatch log group
-- IAM roles
-- S3 bucket
-- DynamoDB table
-- Security group
-- default-VPC subnet discovery
+The Gold layer contains aggregated analytics such as:
 
-Typical deployment:
-
-```bash
-cd terraform
-terraform init
-terraform plan
-terraform apply
-```
-
-Then build and push your Docker image to the generated ECR repository and update `container_image`.
+- affirmation generation counts
+- category-level generation activity
+- AI vs fallback source activity
+- time-windowed generation metrics
 
 ---
 
 # Why Kafka + Spark?
 
-Kafka handles **event ingestion and distribution**.
+Kafka is responsible for **event ingestion and distribution**.
 
-Spark Structured Streaming handles **distributed processing, transformation and aggregation**.
+Spark Structured Streaming is responsible for **distributed processing, transformation and aggregation**.
 
-That gives the project a realistic separation between:
+This creates a realistic separation between:
 
-```text
-Event transport → processing → storage → serving
-```
+    Event transport → processing → storage → serving
 
-rather than using technologies only for keywords.
+rather than using technologies only as isolated tools.
 
 ---
 
-# Bronze / Silver / Gold
+# AWS Integration
 
-## Bronze
-Raw events with minimal changes.
+## Amazon S3
 
-## Silver
-Validated events with:
-- clean categories
-- parsed timestamps
-- valid affirmation text
-- standardised sources
-- derived event date
+The `aws/s3_data_lake.py` module can upload Bronze, Silver and Gold datasets to an S3 data lake.
 
-## Gold
-Aggregated analytics such as:
-- total generated affirmations
-- AI vs fallback counts
-- category popularity
-- average ratings
-- daily event volume
+Example structure:
+
+    s3://<bucket>/bronze/
+    s3://<bucket>/silver/
+    s3://<bucket>/gold/
+
+## Amazon DynamoDB
+
+The `aws/dynamodb_repository.py` module can store Gold-layer metrics for low-latency access.
+
+Example key design:
+
+    PK: CATEGORY#career
+    SK: LATEST
+
+## ECS / Fargate
+
+Terraform includes infrastructure for:
+
+- Amazon ECR repository
+- ECS cluster
+- Fargate task definition
+- Fargate service
+- CloudWatch log group
+- IAM roles
+- Amazon S3 bucket
+- DynamoDB table
+- Security group
+- default VPC subnet discovery
+
+Typical Terraform workflow:
+
+    cd terraform
+    terraform init
+    terraform plan
+    terraform apply
+
+After provisioning, the Docker image can be pushed to the generated ECR repository and referenced through the Terraform `container_image` variable.
+
+> Note: Running `terraform apply` may create billable AWS resources.
 
 ---
 
-# API endpoints
+# API Endpoints
 
 | Method | Endpoint | Purpose |
 |---|---|---|
 | GET | `/health` | Service health |
-| POST | `/api/v1/affirmations/generate` | Generate affirmation |
-| GET | `/api/v1/affirmations/history` | Recent generation history |
-| POST | `/api/v1/affirmations/{id}/feedback` | Store rating |
-| GET | `/api/v1/analytics/summary` | Operational summary |
+| POST | `/api/v1/affirmations/generate` | Generate a personalised affirmation |
+| GET | `/api/v1/affirmations/history` | Retrieve recent affirmation history |
+| POST | `/api/v1/affirmations/{id}/feedback` | Store user feedback |
+| GET | `/api/v1/analytics/summary` | Retrieve operational analytics |
 
 ---
 
-# Interview summary
+# Testing
 
-> I started with a basic Python affirmation generator and redesigned it as an event-driven AI and data engineering platform. FastAPI handles generation requests, the AI service produces personalised affirmations, Kafka carries generation events, and Spark Structured Streaming processes those events into Bronze, Silver and Gold datasets. The architecture uses S3 as the cloud data lake and DynamoDB for low-latency metrics, while Docker, Terraform, GitHub Actions and ECS/Fargate provide a deployment path.
+The project includes automated tests covering:
+
+- AI affirmation generation
+- API endpoints
+- event publishing
+- ETL and data quality logic
+
+Run the full test suite with:
+
+    pytest
 
 ---
 
-# Possible future improvements
+# Continuous Integration
+
+GitHub Actions runs the automated test suite on repository changes to help detect regressions.
+
+Workflow:
+
+    .github/workflows/ci.yml
+
+---
+
+# Docker
+
+The project includes Docker support for the main application services.
+
+To start Kafka:
+
+    docker compose up -d kafka
+
+To run the Spark streaming service through Docker Compose:
+
+    docker compose up spark
+
+The Docker setup uses separate Kafka listeners for host-based and container-based applications.
+
+Host applications connect through:
+
+    localhost:9092
+
+Docker services connect through:
+
+    kafka:29092
+
+---
+
+# Project Evolution
+
+This project started as a basic Python affirmation generator focused on simple user input and motivational messages.
+
+It was redesigned into an event-driven AI and data engineering platform.
+
+The current architecture combines:
+
+- FastAPI for REST API development
+- AI-powered personalised generation
+- SQLAlchemy for operational persistence
+- Kafka for event streaming
+- Spark Structured Streaming for real-time processing
+- batch ETL for data transformation
+- Bronze, Silver and Gold data layers
+- S3 for cloud data lake storage
+- DynamoDB for low-latency metrics
+- Streamlit for analytics
+- Docker for containerisation
+- Terraform for infrastructure as code
+- GitHub Actions for continuous integration
+
+This evolution demonstrates how a small Python project can be expanded into a more realistic software and data engineering system.
+
+---
+
+# Possible Future Improvements
 
 - Amazon MSK instead of self-managed Kafka
 - PostgreSQL for production persistence
-- Glue Data Catalog
+- AWS Glue Data Catalog
 - Athena queries over S3
 - Redshift for warehouse analytics
-- schema registry with Avro
-- dead-letter topic
+- Schema Registry with Avro
+- dead-letter Kafka topic
 - transactional outbox pattern
-- Spark checkpoints in S3
-- authentication
+- Spark checkpoints stored in S3
+- authentication and authorization
 - scheduled personalised affirmations
+- improved monitoring and observability
+'@ | Set-Content -Path README.md -Encoding UTF8
