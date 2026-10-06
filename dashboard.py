@@ -26,6 +26,7 @@ with generate_tab:
         name = st.text_input("Name")
         mood = st.text_input("Current mood")
         goal = st.text_input("Goal")
+
         category = st.selectbox(
             "Category",
             [
@@ -38,9 +39,16 @@ with generate_tab:
                 "relationships",
             ],
         )
+
         tone = st.selectbox(
             "Tone",
-            ["encouraging", "calm", "bold", "gentle", "kawaii"],
+            [
+                "encouraging",
+                "calm",
+                "bold",
+                "gentle",
+                "kawaii",
+            ],
         )
 
         if st.button("Generate", type="primary"):
@@ -58,21 +66,50 @@ with generate_tab:
                     json=payload,
                     timeout=20,
                 )
+
                 response.raise_for_status()
                 st.session_state["latest"] = response.json()
+
             except requests.RequestException as exc:
-                st.error("Start the API first with `uvicorn app.main:app --reload`.")
+                st.error(
+                    "Start the API first with "
+                    "`python -m uvicorn app.main:app`."
+                )
                 st.caption(str(exc))
 
     with right:
         latest = st.session_state.get("latest")
+
         if latest:
             st.success(latest["affirmation"])
-            st.caption(
-                f"Source: {latest['source']} · "
-                f"Category: {latest['category']} · "
-                f"Tone: {latest['tone']}"
-            )
+
+            if latest["source"] == "openai":
+                mode = "Cloud AI"
+
+                st.caption(
+                    f"Mode: {mode} · "
+                    f"Category: {latest['category']} · "
+                    f"Tone: {latest['tone']}"
+                )
+
+                st.info(
+                    "Cloud AI mode generates affirmations "
+                    "using the configured AI provider."
+                )
+
+            else:
+                mode = "Offline Generator"
+
+                st.caption(
+                    f"Mode: {mode} · "
+                    f"Category: {latest['category']} · "
+                    f"Tone: {latest['tone']}"
+                )
+
+                st.info(
+                    "Offline mode runs locally without paid API credits."
+                )
+
         else:
             st.info("Generate an affirmation to see it here.")
 
@@ -82,23 +119,61 @@ with analytics_tab:
 
     if not daily_path.exists() or not category_path.exists():
         st.warning("Run `python -m pipeline.batch_etl` first.")
+
     else:
         daily = pd.read_csv(daily_path)
         categories = pd.read_csv(category_path)
 
-        total = int(daily["generation_count"].sum()) if not daily.empty else 0
-        ai_total = int(daily["ai_generation_count"].sum()) if not daily.empty else 0
+        total = (
+            int(daily["generation_count"].sum())
+            if not daily.empty
+            else 0
+        )
+
+        ai_total = (
+            int(daily["ai_generation_count"].sum())
+            if not daily.empty
+            else 0
+        )
+
+        offline_total = total - ai_total
 
         c1, c2, c3 = st.columns(3)
-        c1.metric("Total generations", total)
-        c2.metric("AI generations", ai_total)
-        c3.metric("AI share", f"{(ai_total / total * 100 if total else 0):.1f}%")
+
+        c1.metric(
+            "Total generations",
+            total,
+        )
+
+        c2.metric(
+            "Offline generations",
+            offline_total,
+        )
+
+        c3.metric(
+            "Cloud AI generations",
+            ai_total,
+        )
 
         if not daily.empty:
             st.subheader("Daily volume")
-            st.line_chart(daily.set_index("event_date")[["generation_count"]])
+
+            st.line_chart(
+                daily.set_index("event_date")[
+                    ["generation_count"]
+                ]
+            )
 
         if not categories.empty:
             st.subheader("Category popularity")
-            st.bar_chart(categories.set_index("category")[["generation_count"]])
-            st.dataframe(categories, use_container_width=True)
+
+            st.bar_chart(
+                categories.set_index("category")[
+                    ["generation_count"]
+                ]
+            )
+
+            st.dataframe(
+                categories,
+                width="stretch",
+            )
